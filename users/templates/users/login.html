@@ -7,7 +7,7 @@
       <div class="columns is-centered" >
         <div class="column is-5-tablet is-4-desktop is-3-widescreen" style="width:30%;">
 
-          <form method="POST" action="." class="box" style="background-color:#343a40;color:white; ">
+          <form method="POST"  class="box" style="background-color:#343a40;color:white; ">
             {% csrf_token %}
 
             <h1 class="has-text-centered mb-5 is-size-3">Login</h1>
@@ -39,7 +39,7 @@
               </button>
             </div>
             <div class="field">
-              Already registered ? <a href="">Signup</a>
+              Not Registered ? <a href="{% url 'register' %}">Signup</a>
             </div>
 
           </form>
