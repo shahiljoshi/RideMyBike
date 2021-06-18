@@ -1,0 +1,124 @@
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{#</head>#}
+{#<body>#}
+{#{% load crispy_forms_tags %}#}
+{##}
+{#    <div class="content-section">#}
+{#        <form method="POST">#}
+{#            {% csrf_token %}#}
+{#            <fieldset class="form-group">#}
+{#                <legend class="border-bottom mb-4">#}
+{#                    JOIN TODAY#}
+{#                </legend>#}
+{#                {{ form|crispy }}#}
+{#            </fieldset>#}
+{#            <div class="form-group">#}
+{#                <button class="btn btn-outline-info" type="submit">Sign Up</button>#}
+{##}
+{#            </div>#}
+{#        </form>#}
+{#        <div class="border-top pt-3">#}
+{#            <small class="text-muted">#}
+{#                Already have Account?#}
+{#                <a class="ml-2" href="{% url 'login' %}">Sign In</a>#}
+{#            </small>#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{#</body>#}
+{#</html>#}
+
+{% extends "bikes/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section class="hero ">
+  <div class="hero-body">
+    <div class="container" >
+      <div class="columns is-centered" >
+        <div class="column is-5-tablet is-4-desktop is-3-widescreen" style="width:30%;">
+
+          <form method="POST" action="." class="box" style="background-color:#343a40;color:white; ">
+            {% csrf_token %}
+
+            <h1 class="has-text-centered mb-5 is-size-3">Signup</h1>
+
+            <div class="field">
+              <label for="" class="label" style="color: white;">Username</label>
+              <div class="control has-icons-left">
+                {{ form.username }}
+                <span class="icon is-small is-left">
+                  <i class="fa fa-user"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="" class="label" style="color: white;">Email</label>
+              <div class="control has-icons-left">
+                {{ form.email }}
+                <span class="icon is-small is-left">
+                  <i class="fa fa-envelope"></i>
+                </span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="" class="label" style="color: white;">Location</label>
+              <div class="control has-icons-left">
+                {{ form.address }}
+                <span class="icon is-small is-left">
+                  <i class="fa fa-map"></i>
+                </span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="" class="label" style="color: white;">Phone</label>
+              <div class="control has-icons-left">
+                {{ form.phone_number }}
+                <span class="icon is-small is-left">
+                  <i class="fa fa-phone"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="" class="label" style="color: white;">Password</label>
+              <div class="control has-icons-left">
+                {{ form.password1 }}
+                <span class="icon is-small is-left">
+                  <i class="fa fa-lock"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="" class="label" style="color: white;">Confirm password</label>
+              <div class="control has-icons-left">
+                {{ form.password2 }}
+                <span class="icon is-small is-left">
+                  <i class="fa fa-lock"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <button class="button is-danger" type=submit>
+                Signup
+              </button>
+            </div>
+            <div class="field">
+              Already registered ? <a href="">Login</a>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

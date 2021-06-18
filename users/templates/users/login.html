@@ -1,0 +1,52 @@
+{% extends "bikes/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section class="hero ">
+  <div class="hero-body">
+    <div class="container" >
+      <div class="columns is-centered" >
+        <div class="column is-5-tablet is-4-desktop is-3-widescreen" style="width:30%;">
+
+          <form method="POST" action="." class="box" style="background-color:#343a40;color:white; ">
+            {% csrf_token %}
+
+            <h1 class="has-text-centered mb-5 is-size-3">Login</h1>
+
+
+            <div class="field">
+              <label for="" class="label" style="color: white;">Email</label>
+              <div class="control has-icons-left">
+                  <input type="email" name="email" class="input"   required>
+                <span class="icon is-small is-left">
+                  <i class="fa fa-envelope"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="" class="label" style="color: white;">Password</label>
+              <div class="control has-icons-left">
+                <input type="password" name="password" class="input"   required>
+                <span class="icon is-small is-left">
+                  <i class="fa fa-lock"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="field">
+              <button class="button is-danger" type=submit>
+                Login
+              </button>
+            </div>
+            <div class="field">
+              Already registered ? <a href="">Signup</a>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
