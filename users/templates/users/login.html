@@ -1,6 +1,7 @@
 {% extends "bikes/base.html" %}
 {% load crispy_forms_tags %}
 {% load socialaccount %}
+{% load account %}
 {% block content %}
     <div class="content-section">
         <form method="POST">
@@ -37,8 +38,7 @@
             <div >
                <center> <legend>Login With</legend>
                 <a href="{% provider_login_url "google" %}" type="button" class="col-3 btn btn-danger "><p class="fa fa-google"> | </p>Google</a>
-{#                <a href="{% provider_login_url 'github' %}" type="button" class="col-3 btn btn-dark"><p class="fa fa-github"> |  </p> GitHub</a>#}
-                <a href="{% provider_login_url "facebook" method="oauth2" %}" type="button" class="col-3 btn btn-info "><p class="fa fa-facebook"> | </p> Facebook</a>
+                <a href="{% provider_login_url "facebook" %}" type="button" class="col-3 btn btn-info "><p class="fa fa-facebook"> | </p> Facebook</a>
                </center>
 
             </div>
