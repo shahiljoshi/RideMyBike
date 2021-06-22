@@ -1,52 +1,55 @@
 {% extends "bikes/base.html" %}
 {% load crispy_forms_tags %}
+{% load socialaccount %}
 {% block content %}
-<section class="hero ">
-  <div class="hero-body">
-    <div class="container" >
-      <div class="columns is-centered" >
-        <div class="column is-5-tablet is-4-desktop is-3-widescreen" style="width:30%;">
-
-          <form method="POST"  class="box" style="background-color:#343a40;color:white; ">
+    <div class="content-section">
+        <form method="POST">
             {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">
+                    Login Now
+                </legend>
+                 <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" required>
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                  </div>
+                  <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                  </div>
+            </fieldset>
 
-            <h1 class="has-text-centered mb-5 is-size-3">Login</h1>
-
-
-            <div class="field">
-              <label for="" class="label" style="color: white;">Email</label>
-              <div class="control has-icons-left">
-                  <input type="email" name="email" class="input"   required>
-                <span class="icon is-small is-left">
-                  <i class="fa fa-envelope"></i>
-                </span>
-              </div>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Login</button>
+                <small class="text-muted ml-2" >
+                    <a href="{% url 'password_reset' %}">Forgot Password</a>
+                </small>
             </div>
 
-            <div class="field">
-              <label for="" class="label" style="color: white;">Password</label>
-              <div class="control has-icons-left">
-                <input type="password" name="password" class="input"   required>
-                <span class="icon is-small is-left">
-                  <i class="fa fa-lock"></i>
-                </span>
-              </div>
+            <br>
+        </form>
+        <center> Or</center>
+            <div >
+               <center> <legend>Login With</legend>
+                <a href="{% provider_login_url "google" %}" type="button" class="col-3 btn btn-danger "><p class="fa fa-google"> | </p>Google</a>
+{#                <a href="{% provider_login_url 'github' %}" type="button" class="col-3 btn btn-dark"><p class="fa fa-github"> |  </p> GitHub</a>#}
+                <a href="{% provider_login_url "facebook" method="oauth2" %}" type="button" class="col-3 btn btn-info "><p class="fa fa-facebook"> | </p> Facebook</a>
+               </center>
+
             </div>
 
-            <div class="field">
-              <button class="button is-danger" type=submit>
-                Login
-              </button>
-            </div>
-            <div class="field">
-              Not Registered ? <a href="{% url 'register' %}">Signup</a>
-            </div>
-
-          </form>
-
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Need An Account?
+                <a class="ml-2" href="{% url 'register' %}">Sign Up</a>
+            </small>
         </div>
-      </div>
     </div>
-  </div>
-</section>
+
+
 {% endblock content %}
