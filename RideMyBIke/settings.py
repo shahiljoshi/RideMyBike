@@ -92,6 +92,9 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
