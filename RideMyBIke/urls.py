@@ -46,6 +46,7 @@ urlpatterns = [
              template_name='users/password_reset_complete.html'
          ),
          name='password_reset_complete'),
+    path('password-change/', user_views.change_password, name='change_password'),
     path('', include('bikes.urls')),
 
 ]

@@ -1,60 +1,12 @@
 from django import forms
-from .models import User,Profile
-from django.contrib.auth.forms import UserCreationForm
+from .models import User, Profile
 
 from django.contrib.auth.forms import (UserCreationForm,
                                        AuthenticationForm,
                                        PasswordResetForm,
-                                       SetPasswordForm
+                                       SetPasswordForm,
+                                       PasswordChangeForm
                                        )
-
-#
-# class UserLoginForm(AuthenticationForm):
-#     def __init__(self, *args, **kwargs):
-#         super(UserLoginForm, self).__init__(*args, **kwargs)
-#
-#     email = forms.CharField(widget=forms.TextInput(attrs={
-#         "class": "input",
-#         "type": "email",
-#         "placeholder": "enter email"
-#     }))
-#
-#     password = forms.CharField(widget=forms.TextInput(attrs={
-#         "class": "input",
-#         "type": "password",
-#         "placeholder": "enter password"
-#     }))
-
-
-class ResetPasswordForm(PasswordResetForm):
-    def __init__(self, *args, **kwargs):
-        super(ResetPasswordForm, self).__init__(*args, **kwargs)
-
-    email = forms.CharField(widget=forms.TextInput(attrs={
-        "class": "input",
-        "type": "email",
-        "placeholder": "enter email-id"
-    }))
-
-
-class NewPasswordForm(SetPasswordForm):
-    def __init__(self, *args, **kwargs):
-        super(NewPasswordForm, self).__init__(*args, **kwargs)
-
-    new_password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'class': "input",
-            "type": "password",
-            'autocomplete': 'new-password'
-        }))
-
-    new_password2 = forms.CharField(
-        strip=False,
-        widget=forms.PasswordInput(attrs={
-            'class': "input",
-            "type": "password",
-            'autocomplete': 'new-password'
-        }))
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -99,14 +51,12 @@ class UserRegistrationForm(UserCreationForm):
         fields = ['username', 'email', 'address', 'phone_number', 'password1', 'password2']
 
 
-
-
-
 class UserUpdateForm(forms.ModelForm):
     email = forms.EmailField()
+
     class Meta:
        model = User
-       fields = ['email']
+       fields = ['username', 'email']
 
 
 class ProfileUpdateForm(forms.ModelForm):
@@ -115,26 +65,3 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['image']
 
 
-
-
-
-
-
-
-
-
-
-
-
-#
-# class UserRegisterFrom(UserCreationForm):
-#     email = forms.EmailField()
-#     address = forms.Textarea()
-#     phone_number = forms.IntegerField()
-#
-#     class Meta:
-#        model = User
-#        fields = ['username', 'email','address','phone_number','password1', 'password2']
-#
-#
-#

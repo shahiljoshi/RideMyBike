@@ -1,12 +1,26 @@
 {% extends "bikes/base.html" %}
 
 {% block content %}
+    <div class="page-heading header-text">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1> Login Again</h1>
+            <span>You Have Logged Out</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonials">
+    <div class="container">
     <h2>You Have Logged Out</h2>
     <div class="border-top pt-3">
             <small class="text-muted">
                 Login Again
                 <a href="{% url 'login' %}">Login</a>
             </small>
+    </div>
+    </div>
     </div>
 
 {% endblock content %}

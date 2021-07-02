@@ -1,0 +1,150 @@
+{% extends 'bikes/base.html' %}
+{% load static %}
+{% block content %}
+ <div class="page-heading header-text">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Station Details</h1>
+        <span>Available Bike At Your Nearest Station</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="testimonials">
+<div class="container">
+
+<div class="row">
+  <div class="col-lg-12 text-center">
+    <h1>{{ station.address }}</h1>
+    {% if bikes %}
+    <p class="lead">Choose a bike to rent</p>
+    <form action="." method="post">
+
+      <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01" >Bike Number</label>
+          </div>
+            {% csrf_token %}
+            <select class="custom-select" multiple id="inputGroupSelect01" name="b_id" required>
+              {% for bike in bikes %}
+              <option value={{bike.id}}><li>{{bike.id}}</li></option>
+              {% endfor %}]
+            </select>
+      </div>
+
+    <div class="container">
+    <div class="row">
+     {% for bike in bikes %}
+      <div class="col-md-4">
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="https://media.wired.com/photos/6052610661dc2a7ba95d028e/1:1/w_1706,c_limit/Gear-Gazelle-Ultimate-C380-Side-SOURCE-Gazelle.jpg" alt="Card image cap">
+          <div class="card-body">
+            <p class="card-text" >{{bike.id}}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+    </div>
+    <br>
+    <br>
+
+      <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01" >Plan</label>
+          </div>
+            <select class="custom-select" id="inputGroupSelect01" name="plan" >
+              {% for plan in plans %}
+              <option value={{plan}}><li>{{plan}}</li></option>
+              {% endfor %}]
+            </select>
+      </div>
+
+
+<div class="section-heading">
+  <h2>Our <em>Offers</em></h2>
+  <span>Rent Bike Now</span>
+</div>
+<div id="pricing">
+	<div class="price_card alpha">
+		<div class="header">
+			<span class="price">$5</span>
+			<span class="name">Hourly Alpha Pack</span>
+		</div>
+		<ul class="features">
+			<li>Rent Bike On Hourly Basis</li>
+		</ul>
+
+        <span class="tip">* Great for beginners!</span>
+	</div>
+	<div class="price_card bravo">
+		<div class="header">
+			<span class="price">$20</span>
+			<span class="name">Daily Bravo Pack</span>
+		</div>
+		<ul class="features">
+			<li>Rent Bike On Daily Basis</li>
+		</ul>
+
+		<span class="tip">* Most popular!</span>
+	</div>
+	<div class="price_card charlie">
+		<div class="header">
+			<span class="price">$60</span>
+			<span class="name">Weekly Charlie Pack</span>
+		</div>
+		<ul class="features">
+			<li>Rent Bike On Weekly Basis</li>
+		</ul>
+
+	</div>
+</div>
+<br>
+<br>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="section-heading">
+          <h2>Family Rentals<em>Enjoy Ride With Family</em></h2>
+          <span>Our Family Rentals Service</span>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="owl-testimonials owl-carousel">
+
+          <div class="testimonial-item">
+            <div class="inner-content">
+              <h4>Family Rentals</h4>
+              <span>Rent Bikes More Than 3</span>
+              <p>Rent Bikes More Than 3 and Get 30 % Discount on Total Amount!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<br>
+<br>
+
+
+
+      <div class="form-group">
+        <input class="btn btn-warning" type="submit" name="rent_bike" value="Rent"/>
+      </div>
+    </form>
+        <br>
+        <br>
+        <br>
+    {% else %}
+    <p class="lead">No bikes available on the station, sorry.</p>
+    {% endif %}
+  </div>
+</div>
+
+
+</div>
+</div>
+
+{% endblock %}

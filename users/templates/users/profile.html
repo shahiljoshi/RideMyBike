@@ -1,12 +1,24 @@
 {% extends "bikes/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+    <div class="page-heading header-text">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1>Your Profile</h1>
+            <span>See Your Profile</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonials">
+    <div class="container">
     <div class="content-section">
       <div class="media">
         <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
         <div class="media-body">
-          <h2 class="account-heading">{{ user.email }}</h2>
-          <p class="text-secondary"></p>
+          <h2 class="account-heading">{{ user.username }}</h2>
+          <p class="text-secondary">{{ user.email }}</p>
         </div>
       </div>
       <form method="POST" enctype="multipart/form-data">
@@ -15,10 +27,15 @@
               <legend class="border-bottom mb-4">Profile Info</legend>
               {{ u_form|crispy }}
               {{ p_form|crispy }}
+                <a href="{% url 'change_password' %}" class="filled-button">Change Password </a>
+                <a href="{% url 'recharge' %}" class="filled-button">Recharge</a> Your Balance : {{ user.balance }}
+
           </fieldset>
           <div class="form-group">
               <button class="btn btn-outline-info" type="submit">Update</button>
           </div>
       </form>
+    </div>
+    </div>
     </div>
 {% endblock content %}

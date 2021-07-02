@@ -1,20 +1,175 @@
-{% extends "bikes/base.html" %}
+{% extends 'bikes/base.html' %}
+{% load static %}
 {% block content %}
+    <!-- Banner Starts Here -->
+    <div class="main-banner header-text" id="top">
+        <div class="Modern-Slider">
+          <!-- Item -->
+          <div class="item item-1">
+            <div class="img-fill">
+                <div class="text-content">
+                  <h6>Bike On Rent</h6>
+                  <h4>Ride Bike<br> On Rent</h4>
+                  <p>Bike On Rent is currently available in the city of Ahmedabad, Mumbai & Udaipur. It is also available in select campuses such as IIT Bombay, IIM Ahmedabad, etc. Download our app to find out the hub nearest to you.</p>
+                  <a href="{% url 'stations' %}" class="filled-button">Rent</a>
+                </div>
+            </div>
+          </div>
+          <!-- // Item -->
+          <!-- Item -->
+          <div class="item item-2">
+            <div class="img-fill">
+                <div class="text-content">
+                  <h6>Bike On Rent</h6>
+                  <h4>Ride Bike<br> On Rent</h4>
+                  <p>Bike On Rent is currently available in the city of Ahmedabad, Mumbai & Udaipur. It is also available in select campuses such as IIT Bombay, IIM Ahmedabad, etc. Download our app to find out the hub nearest to you.</p>
+                  <a href="{% url 'stations' %}" class="filled-button">Rent</a>
+                </div>
+            </div>
+          </div>
+          <!-- // Item -->
+          <!-- Item -->
+          <div class="item item-3">
+            <div class="img-fill">
+                <div class="text-content">
+                  <h6>Bike On Rent</h6>
+                  <h4>Ride Bike<br> On Rent</h4>
+                  <p>Bike On Rent is currently available in the city of Ahmedabad, Mumbai & Udaipur. It is also available in select campuses such as IIT Bombay, IIM Ahmedabad, etc. Download our app to find out the hub nearest to you.</p>
+                  <a href="{% url 'stations' %}" class="filled-button">Rent</a>
 
-<center>
-<h1 style="margin: 20% auto;color: #dddddd;" >Find Your Nearest Location Of Ride My Bike Points</h1>
-    <!-- Example single danger button -->
-<div class="btn-group">
-  <button type="button" class="btn btn-success btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Select Your Location
-  </button>
-  <div class="dropdown-menu">
-    <a class="dropdown-item" href="#">Action</a>
-    <a class="dropdown-item" href="#">Another action</a>
-    <a class="dropdown-item" href="#">Something else here</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="#">Separated link</a>
+                </div>
+            </div>
+          </div>
+          <!-- // Item -->
+        </div>
+    </div>
+    <!-- Banner Ends Here -->
+<div class="testimonials">
+{% if request.user.is_authenticated %}
+  <div class="container" >
+    <div class="section-heading text-center">
+    {% if rentals %}
+      <center>
+                <h2>Currently <em>Rented Bikes</em></h2>
+{#              <h1>Currently rented bikes:</h1>#}
+              <p class="lead">Remember to return them!</p>
+      </center>
+        <br>
+        <br>
+        <br>
+        <table class="table table-hover table-dark table-responsive-lg" style="">
+        <thead>
+            <tr>
+              <th scope="col">Bike number</th>
+              <th scope="col">Start station</th>
+              <th scope="col">Rental start</th>
+              <th scope="col">Return</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rental in rentals %}
+              <tr>
+                <td scope="row">{% for bike in rental.bike.values %}[{{ bike.id }}]{% endfor %}</td>
+                <td>{{ rental.start_station.address }}</td>
+                <td>{{ rental.start_date }}</td>
+                <td class="col-xs-1">
+                  <form action="{% url 'stations' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name='rental_id' value="{{ rental.id }}"></input>
+                    <button class="btn btn-primary" type="submit" name="bike_return">Return bike</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <center>
+                <h2>Currently No<em>Rented Bikes</em></h2>
+{#              <h1>Currently rented bikes:</h1>#}
+                <p class="lead">Rent It Now!</p>
+        </center>
+     {% endif %}
+</div>
+</div>
+
+{% else %}
+<div class="row" >
+<div class="col-lg-12 text-center">
+  <h1>Bike On Rent</h1>
+  <p class="lead"> User not logged in. </p>
+</div>
+</div>
+{% endif %}
+</div>
+
+<div class="services">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="section-heading">
+          <h2>Our <em>Offers</em></h2>
+          <span>Rent Bike Now</span>
+        </div>
+      </div>
+        <div id="pricing">
+            <div class="price_card alpha">
+                <div class="header">
+                    <span class="price">$5</span>
+                    <span class="name">Hourly Alpha Pack</span>
+                </div>
+                <ul class="features">
+                    <li>Rent Bike On Hourly Basis</li>
+                </ul>
+
+                <span class="tip">* Great for beginners!</span>
+            </div>
+            <div class="price_card bravo">
+                <div class="header">
+                    <span class="price">$20</span>
+                    <span class="name">Daily Bravo Pack</span>
+                </div>
+                <ul class="features">
+                    <li>Rent Bike On Daily Basis</li>
+                </ul>
+                <span class="tip">* Most popular!</span>
+            </div>
+            <div class="price_card charlie">
+                <div class="header">
+                    <span class="price">$60</span>
+                    <span class="name">Weekly Charlie Pack</span>
+                </div>
+                <ul class="features">
+                    <li>Rent Bike On Weekly Basis</li>
+                </ul>
+            </div>
+        </div>
+    </div>
   </div>
 </div>
-</center>
+
+<div class="testimonials">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="section-heading">
+          <h2>Family Rentals<em>Enjoy Ride With Family</em></h2>
+          <span>Our Family Rentals Service</span>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="owl-testimonials owl-carousel">
+
+          <div class="testimonial-item">
+            <div class="inner-content">
+              <h4>Family Rentals</h4>
+              <span>Rent Bikes More Than 3</span>
+              <p>Rent Bikes More Than 3 and Get 30 % Discount on Total Amount!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
