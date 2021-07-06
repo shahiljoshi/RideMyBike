@@ -1,7 +1,11 @@
+from builtins import bin
+
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib import messages
-from .models import Station, Bike, Rental, User as BikeUser ,Payment
+from .models import Station, Bike, Rental, User as BikeUser, Payment
 from datetime import datetime
+from django.db import transaction
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 plans = ['HOURLY', 'DAILY', 'WEEKLY']
@@ -21,6 +25,10 @@ def about(request):
     return render(request, 'bikes/about.html')
 
 
+def faq(request):
+    return render(request, 'bikes/faq.html')
+
+@login_required()
 def stations(request):
     if request.method == 'POST':
         print(request.POST)
@@ -43,6 +51,7 @@ def stations(request):
     return render(request, 'bikes/stations.html', context={'stations': Station.objects.all()})
 
 
+@login_required()
 def station_detail(request, station_id):
     if request.method == 'POST':
         global plan_choosed
@@ -62,61 +71,69 @@ def station_detail(request, station_id):
                            'plans': plans})
 
 
+@login_required()
 def rent_bike(request, station_id, bike_id, user):
-    if user.balance > 500:
-        print("plan ypu choosed", plan_choosed)
-        station = Station.objects.select_for_update().get(pk=station_id)
-        if len(user.rental_set.all().filter(end_station__isnull=True)) >= 3:
-            messages.error(request, "you already rented 3 bikes")
-        r = Rental(user=user, start_date=datetime.now(), start_station=station, plan=plan_choosed)
-        r.save()
-        for i in bike_id:
-            bikes = Bike.objects.filter(pk=int(i))
-            Bike.objects.filter(pk=int(i)).update(available=False)
-            r.bike.add(i)
-            print(bikes)
-        print(r)
-        messages.success(request, "bike rented successfully")
-    else:
-        messages.warning(request, "please deposite at least 500 ")
-        return render(request, 'bikes/recharge.html')
+    with transaction.atomic():
+        if user.balance > 500:
+            Rental.objects.filter()
+            print("plan you choosed", plan_choosed)
+            station = Station.objects.select_for_update().get(pk=station_id)
+            r = Rental(user=user, start_date=datetime.now(), start_station=station, plan=plan_choosed)
+            r.save()
+            for i in bike_id:
+                bikes = Bike.objects.filter(pk=int(i))
+                Bike.objects.filter(pk=int(i)).update(available=False)
+                r.bike.add(i)
+                print(bikes)
+            print(r)
+            messages.success(request, "bike rented successfully")
+        else:
+            messages.warning(request, "please deposite at least 500 ")
+            return render(request, 'bikes/recharge.html')
 
 
+@login_required()
 def return_bike(request, rental_id, station_id):
-    Rental.objects.select_for_update()
-    Bike.objects.select_for_update()
-    BikeUser.objects.select_for_update()
-    rental = Rental.objects.get(pk=rental_id)
-    end_station = Station.objects.get(pk=station_id)
-    rental.bike.all().update(available=True)
-    rental.bike.all().update(station=end_station)
-    rental.end_station = end_station
-    rental.end_date = datetime.now()
-    print(type(rental.plan))
-    global family_rental
-    if rental.plan == 'HOURLY':
-        charge = 10*rental.bike.count()
-    elif rental.plan == 'DAILY':
-        charge = 50*rental.bike.count()
-    else:
-        charge = 150*rental.bike.count()
-    # charge = 50
+    with transaction.atomic():
+        Rental.objects.select_for_update()
+        Bike.objects.select_for_update()
+        BikeUser.objects.select_for_update()
 
-    if rental.bike.count() >= 3:
-       charge -= charge*30/100
-       family_rental = True
-    else:
-        family_rental =False
-    rental.cost = charge
-    rental.user.balance -= charge
-    rental.user.save()
-    rental.save()
-    p = Payment(rental=rental, status=True)
-    p.save()
-    messages.success(request, f"Bike returned successfully. Charged user for the rental Rs{charge}.")
+        rental = Rental.objects.get(pk=rental_id)
+
+        end_station = Station.objects.get(pk=station_id)
+
+        rental.bike.all().update(available=True)
+        rental.bike.all().update(station=end_station)
+
+        rental.end_station = end_station
+        rental.end_date = datetime.now()
+        print(type(rental.plan))
+        global family_rental
+        if rental.plan == 'HOURLY':
+            charge = 10*rental.bike.count()
+        elif rental.plan == 'DAILY':
+            charge = 50*rental.bike.count()
+        else:
+            charge = 150*rental.bike.count()
+        # charge = 50
+
+        if rental.bike.count() >= 3:
+           charge -= charge*30/100
+           family_rental = True
+        else:
+            family_rental = False
+        rental.cost = charge
+        rental.user.balance -= charge
+        rental.user.save()
+        rental.save()
+        p = Payment(rental=rental, status=True)
+        p.save()
+        messages.success(request, f"Bike returned successfully. Charged user for the rental Rs{charge}.")
     return redirect('rental_detail', rental_id=rental.id)
 
 
+@login_required()
 def rental_detail(request, rental_id):
     rental = Rental.objects.get(pk=rental_id)
     if request.user != rental.user:
@@ -129,12 +146,16 @@ def rental_detail(request, rental_id):
                   {'rental': rental})
 
 
+@login_required()
 def recharge(request):
     if not request.user.is_authenticated:
         return redirect('home')
     if request.method == 'POST':
         if int(request.POST['amount']) < 0:
             messages.warning(request, 'Negative amount')
+            return render(request, 'bikes/recharge.html', context={})
+        if int(request.POST['amount']) > 1000:
+            messages.warning(request, 'Amount Greater Than 1000 Not allowed')
             return render(request, 'bikes/recharge.html', context={})
         amount = int(request.POST['amount'])
         request.user.balance += int(request.POST['amount'])

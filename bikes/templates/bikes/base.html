@@ -78,10 +78,11 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'about' %}">About</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'stations' %}">Station</a>
-              </li>
+
               {% if user.is_authenticated %}
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'stations' %}">Station</a>
+                      </li>
                       <a class="nav-item nav-link" href="{% url 'profile' %}">Welcome {{ request.user.username }}</a>
 {#                      <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>#}
                       <a class=" btn btn-primary"  type="button" href="{% url 'logout' %}">Logout</a>
@@ -124,11 +125,8 @@
           <div class="col-md-4 footer-item">
             <h4>Additional Pages</h4>
             <ul class="menu-list">
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">Contact Us</a></li>
-              <li><a href="#">Terms</a></li>
+              <li><a href={% url 'about' %}>About Us</a></li>
+              <li><a href={% url 'faq' %}>FAQ</a></li>
             </ul>
           </div>
           <div class="col-md-4 footer-item last-item">
@@ -181,8 +179,8 @@
    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-    <!-- Additional Scripts -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+       <!-- Additional Scripts -->
     <script src="{% static 'bikes/jquery/jquery.min.js'%}"></script>
     <script src="{% static 'bikes/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
     <script src="{% static 'bikes/js/custom.js'%}"></script>
@@ -199,6 +197,26 @@
           t.style.color='#fff';
           }
       }
+    </script>
+    <script>
+        var doc = new jsPDF('landscape', 'pt', 'a4');
+        doc.setFont("arial", "bold");
+        doc.setFontSize(15);
+        var specialElementHandlers = {
+            '#editor': function (element, renderer) {
+                return true;
+            }
+        };
+        $('#cmd').click(function () {
+            doc.fromHTML($('#content').html(), 25, 25, {
+                'width': 170,
+                'height':170,
+                'fontsize':10,
+                'autoSize':10,
+                'elementHandlers': specialElementHandlers
+            });
+            doc.save('bill.pdf');
+        });
     </script>
 
   </body>
