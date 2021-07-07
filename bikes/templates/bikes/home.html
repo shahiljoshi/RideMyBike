@@ -75,8 +75,8 @@
                 <td class="col-xs-1">
                   <form action="{% url 'stations' %}" method="post">
                     {% csrf_token %}
-                    <input type="hidden" name='rental_id' value="{{ rental.id }}"></input>
-                    <button class="btn btn-primary" type="submit" name="bike_return">Return bike</button>
+                    <input type="hidden" name='rental_id' value="{{ rental.id }}">
+                    <button class="btn btn-primary" type="submit" name="return_bike">Return bike</button>
                   </form>
                 </td>
               </tr>

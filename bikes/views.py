@@ -28,6 +28,7 @@ def about(request):
 def faq(request):
     return render(request, 'bikes/faq.html')
 
+
 @login_required()
 def stations(request):
     if request.method == 'POST':
@@ -37,17 +38,17 @@ def stations(request):
             return_bike(request, request.POST['rental_id'], request.POST['station_id'])
             return redirect('rental_detail', rental_id=request.POST['rental_id'])
 
-        if 'station_select' in request.POST:
+        if 'selected_station' in request.POST:
             return redirect('station_detail', station_id=request.POST['station_id'])
 
-        if 'bike_return' in request.POST:
-            s = {'stations': Station.objects.all()}
-            s.update(request.POST)
-            print(s)
-            s['rental_id'] = int(s['rental_id'][0])
-            return render(request, 'bikes/stations.html', context=s)
+        if 'return_bike' in request.POST:
+            station = {'stations': Station.objects.all()}
+            station.update(request.POST)
+            print(station)
+            station['rental_id'] = int(station['rental_id'][0])
+            return render(request, 'bikes/stations.html', context=station)
             pass
-        return reverse('station_detail', kwargs={'station_id': request.POST['s_id']})
+        return reverse('station_detail', kwargs={'station_id': request.POST['station_id']})
     return render(request, 'bikes/stations.html', context={'stations': Station.objects.all()})
 
 
@@ -57,17 +58,20 @@ def station_detail(request, station_id):
         global plan_choosed
         plan_choosed = request.POST.get("plan")
         print(request.POST.get("plan"))
-        print(request.POST.getlist('b_id'))
-        s = get_object_or_404(Bike, pk=request.POST['b_id'])
-        out = rent_bike(request, station_id, request.POST.getlist('b_id'), request.user)
-        return home(request, alerts=[out])
-    s = get_object_or_404(Station, pk=station_id)
+        print(request.POST.getlist('bike_id'))
+        station = get_object_or_404(Bike, pk=request.POST['bike_id'])
+        rented_bikes = rent_bike(request, station_id, request.POST.getlist('bike_id'), request.user)
+        return home(request, current_rentals=rented_bikes)
+        # return redirect('home',kwargs={'current_rentals':rented_bikes})
+
+        # return redirect('home',current_rentals=rented_bikes)
+    station = get_object_or_404(Station, pk=station_id)
     # total_bikes = s.bike_set.all().filter(available=True).filter(working=True).count()
     # print(total_bikes)
     return render(request,
                   'bikes/station_details.html',
-                  context={'station': s,
-                           'bikes': s.bike_set.all().filter(available=True).filter(working=True),
+                  context={'station': station,
+                           'bikes': station.bike_set.all().filter(available=True).filter(working=True),
                            'plans': plans})
 
 
@@ -75,7 +79,7 @@ def station_detail(request, station_id):
 def rent_bike(request, station_id, bike_id, user):
     with transaction.atomic():
         if user.balance > 500:
-            Rental.objects.filter()
+            # Rental.objects.filter()
             print("plan you choosed", plan_choosed)
             station = Station.objects.select_for_update().get(pk=station_id)
             r = Rental(user=user, start_date=datetime.now(), start_station=station, plan=plan_choosed)

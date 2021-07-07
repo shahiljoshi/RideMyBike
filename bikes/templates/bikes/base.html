@@ -123,11 +123,17 @@
           </div>
 
           <div class="col-md-4 footer-item">
-            <h4>Additional Pages</h4>
-            <ul class="menu-list">
-              <li><a href={% url 'about' %}>About Us</a></li>
-              <li><a href={% url 'faq' %}>FAQ</a></li>
-            </ul>
+            <h4>FAQ</h4>
+{#            <ul class="menu-list">#}
+{#              <li><a href={% url 'about' %}>About Us</a></li>#}
+{#              <li><a href={% url 'faq' %}>FAQ</a></li>#}
+{#            </ul>#}
+            <iframe
+                allow="microphone;"
+                width="300"
+                height="400"
+                src="https://console.dialogflow.com/api-client/demo/embedded/79ccf931-25cb-4118-ba0c-f9272f7f7779">
+            </iframe>
           </div>
           <div class="col-md-4 footer-item last-item">
             <h4>Contact Us</h4>
