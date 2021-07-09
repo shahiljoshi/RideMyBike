@@ -1,5 +1,6 @@
 {% extends 'bikes/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block content %}
     <!-- Banner Starts Here -->
     <div class="main-banner header-text" id="top">
@@ -21,7 +22,7 @@
             <div class="img-fill">
                 <div class="text-content">
                   <h6>Bike On Rent</h6>
-                  <h4>Ride Bike<br> On Rent</h4>
+                  <h4>Go Green</h4>
                   <p>Bike On Rent is currently available in the city of Ahmedabad, Mumbai & Udaipur. It is also available in select campuses such as IIT Bombay, IIM Ahmedabad, etc. Download our app to find out the hub nearest to you.</p>
                   <a href="{% url 'stations' %}" class="filled-button">Rent</a>
                 </div>
@@ -71,7 +72,8 @@
               <tr>
                 <td scope="row">{% for bike in rental.bike.values %}[{{ bike.id }}]{% endfor %}</td>
                 <td>{{ rental.start_station.address }}</td>
-                <td>{{ rental.start_date }}</td>
+                <td>{{ rental.start_date  }}</td>
+{#                <td>  <p id="basicUsage">00:00:00</p></td>#}
                 <td class="col-xs-1">
                   <form action="{% url 'stations' %}" method="post">
                     {% csrf_token %}
@@ -103,12 +105,15 @@
 {% endif %}
 </div>
 
+
+{#<a href="https://logwork.com/countdown-po2b" class="countdown-timer" data-timezone="Asia/Kolkata" data-date="{{ time }}">Ride Ends</a>#}
 <div class="services">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
         <div class="section-heading">
           <h2>Our <em>Offers</em></h2>
+
           <span>Rent Bike Now</span>
         </div>
       </div>

@@ -124,6 +124,7 @@
 
           <div class="col-md-4 footer-item">
             <h4>FAQ</h4>
+{#              <div id="basicUsage">00:00:00</div>#}
 {#            <ul class="menu-list">#}
 {#              <li><a href={% url 'about' %}>About Us</a></li>#}
 {#              <li><a href={% url 'faq' %}>FAQ</a></li>#}
@@ -193,6 +194,25 @@
     <script src="{% static 'bikes/js/owl.js'%}"></script>
     <script src="{% static 'bikes/js/slick.js'%}"></script>
     <script src="{% static 'bikes/js/accordions.js'%}"></script>
+    <script src="https://cdn.logwork.com/widget/countdown.js"></script>
+
+
+   <script src="https://cdn.jsdelivr.net/npm/easytimer@1.1.1/src/easytimer.min.js"></script>
+
+    <script>
+        var timerInstance = new easytimer.Timer();
+
+    </script>
+{#    <script>#}
+{#          var timer = new Timer();#}
+{#          timer.start();#}
+{#          timer.addEventListener('secondsUpdated', function(e) {#}
+{##}
+{#              $('#basicUsage').html(timer.getTimeValues().toString());#}
+{##}
+{#          });#}
+{#    </script>#}
+
 
     <script language = "text/Javascript">
       cleared[0] = cleared[1] = cleared[2] = 0; //set a cleared flag for each field

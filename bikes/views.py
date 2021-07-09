@@ -1,36 +1,71 @@
 from builtins import bin
-
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib import messages
 from .models import Station, Bike, Rental, User as BikeUser, Payment
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
+import time
 # Create your views here.
 
+
 plans = ['HOURLY', 'DAILY', 'WEEKLY']
+
 global plan_choosed
 global family_rental
 
 
 def home(request, *args, **kwargs):
+    """
+
+    :param request:
+    :param args:
+    :param kwargs:
+    :return:
+    home function shows the current rented bikes of user by the rental_set function for multiple data
+    """
     if request.user.is_authenticated:
         current_rentals = {'rentals': request.user.rental_set.all().filter(end_station__isnull=True)}
-        return render(request, 'bikes/home.html', context=current_rentals)
+        print(current_rentals['rentals'])
+        end_time = 0
+        for i in current_rentals['rentals']:
+            end_time = (i.start_date+timedelta(hours=1)).strftime('%Y-%m-%d %H:%M')
+            print(i.plan)
+        print(end_time)
+        context = {'rentals': request.user.rental_set.all().filter(end_station__isnull=True),'time':end_time}
+        return render(request, 'bikes/home.html', context=context)
     else:
         return render(request, 'bikes/home.html')
 
 
 def about(request):
+    """
+
+    :param request:
+    :return:
+    about function shows the information about the initiative
+    """
     return render(request, 'bikes/about.html')
 
 
 def faq(request):
+    """
+
+    :param request:
+    :return:
+    faq function will help the customers by answering the question  generally the chatbot by dialogflow
+    """
     return render(request, 'bikes/faq.html')
 
 
 @login_required()
 def stations(request):
+    """
+
+    :param request:
+    :return:
+    station function shows the available station and customer chooses nearest station including start station to end station
+    """
     if request.method == 'POST':
         print(request.POST)
 
@@ -54,6 +89,13 @@ def stations(request):
 
 @login_required()
 def station_detail(request, station_id):
+    """
+
+    :param request:
+    :param station_id:
+    :return:
+    station detail function shows the available bikes at choosed station and plans to choose and also dynamic map by google map
+    """
     if request.method == 'POST':
         global plan_choosed
         plan_choosed = request.POST.get("plan")
@@ -62,9 +104,6 @@ def station_detail(request, station_id):
         station = get_object_or_404(Bike, pk=request.POST['bike_id'])
         rented_bikes = rent_bike(request, station_id, request.POST.getlist('bike_id'), request.user)
         return home(request, current_rentals=rented_bikes)
-        # return redirect('home',kwargs={'current_rentals':rented_bikes})
-
-        # return redirect('home',current_rentals=rented_bikes)
     station = get_object_or_404(Station, pk=station_id)
     # total_bikes = s.bike_set.all().filter(available=True).filter(working=True).count()
     # print(total_bikes)
@@ -77,6 +116,16 @@ def station_detail(request, station_id):
 
 @login_required()
 def rent_bike(request, station_id, bike_id, user):
+    """
+
+    :param request:
+    :param station_id:
+    :param bike_id:
+    :param user:
+    :return:
+    rent bike function used after choosing the bikes and plan for renting the bike for user
+    transaction atomic is the feature that lock the transaction of the user(rental half transaction)
+    """
     with transaction.atomic():
         if user.balance > 500:
             # Rental.objects.filter()
@@ -84,6 +133,8 @@ def rent_bike(request, station_id, bike_id, user):
             station = Station.objects.select_for_update().get(pk=station_id)
             r = Rental(user=user, start_date=datetime.now(), start_station=station, plan=plan_choosed)
             r.save()
+            end_time = datetime.now() + timedelta(hours=1)
+            print(end_time)
             for i in bike_id:
                 bikes = Bike.objects.filter(pk=int(i))
                 Bike.objects.filter(pk=int(i)).update(available=False)
@@ -98,6 +149,17 @@ def rent_bike(request, station_id, bike_id, user):
 
 @login_required()
 def return_bike(request, rental_id, station_id):
+    """
+
+    :param request:
+    :param rental_id:
+    :param station_id:
+    :return:
+
+    return bike function is use for returning the bike if the customer return the bike late then he has to pay penalty accordingly
+    here the transaction atomic use for completing the half transaction that in rent bike and here completes the full entry
+    here the final payment cut from the user wallet
+    """
     with transaction.atomic():
         Rental.objects.select_for_update()
         Bike.objects.select_for_update()
@@ -111,15 +173,35 @@ def return_bike(request, rental_id, station_id):
         rental.bike.all().update(station=end_station)
 
         rental.end_station = end_station
+
         rental.end_date = datetime.now()
         print(type(rental.plan))
+
         global family_rental
         if rental.plan == 'HOURLY':
-            charge = 10*rental.bike.count()
+            print(datetime.now().strftime('%Y-%m-%d %H:%M'))
+            print((rental.start_date + timedelta(seconds=30)).strftime('%Y-%m-%d %H:%M'))
+            if datetime.now().strftime('%Y-%m-%d %H:%M') <= (rental.start_date + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M') :
+                charge = 10*rental.bike.count()
+            else:
+                messages.warning(request,"Penalty Of Rs.100")
+                charge = (10*rental.bike.count())+100
+
         elif rental.plan == 'DAILY':
-            charge = 50*rental.bike.count()
+            if datetime.now().strftime('%Y-%m-%d %H:%M') <= (rental.start_date + timedelta(hours=24)).strftime('%Y-%m-%d %H:%M'):
+
+                charge = 50*rental.bike.count()
+            else:
+                messages.warning(request,"Penalty Of Rs.150")
+                charge = (50*rental.bike.count())+150
+
         else:
-            charge = 150*rental.bike.count()
+            if datetime.now().strftime('%Y-%m-%d %H:%M') <= (rental.start_date + timedelta(hours=168)).strftime('%Y-%m-%d %H:%M'):
+                charge = 150*rental.bike.count()
+            else:
+                messages.warning(request,"Penalty Of Rs.250")
+                charge = (50*rental.bike.count())+250
+
         # charge = 50
 
         if rental.bike.count() >= 3:
@@ -139,6 +221,13 @@ def return_bike(request, rental_id, station_id):
 
 @login_required()
 def rental_detail(request, rental_id):
+    """
+
+    :param request:
+    :param rental_id:
+    :return:
+     rental detail function generates the information of rental and have option to generate the pdf of the bill
+    """
     rental = Rental.objects.get(pk=rental_id)
     if request.user != rental.user:
         messages.warning(request, 'You cannot see this rental, sorry.')
@@ -152,6 +241,12 @@ def rental_detail(request, rental_id):
 
 @login_required()
 def recharge(request):
+    """
+
+    :param request:
+    :return:
+    recharge function use for the user wallet balance
+    """
     if not request.user.is_authenticated:
         return redirect('home')
     if request.method == 'POST':

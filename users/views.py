@@ -9,6 +9,11 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def register(request):
+    """
+    :param request:
+    :return:
+    user registration
+    """
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -22,6 +27,12 @@ def register(request):
 
 
 def login(request):
+    """
+
+    :param request:
+    :return:
+    user login
+    """
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
@@ -33,7 +44,7 @@ def login(request):
             messages.success(request, 'You are now logged in!!')
             return redirect('home')
         else:
-            messages.error(request, 'Invalid Credentials')
+            messages.warning(request, 'Invalid Credentials')
             return redirect('login')
     else:
         return render(request, 'users/login.html')
@@ -41,6 +52,12 @@ def login(request):
 
 @login_required
 def profile(request):
+    """
+
+    :param request:
+    :return:
+    user profile
+    """
     Profile.objects.get_or_create(user=request.user)
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
@@ -66,6 +83,12 @@ def profile(request):
 
 
 def change_password(request):
+    """
+
+    :param request:
+    :return:
+    change password
+    """
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
