@@ -5,6 +5,9 @@ from .models import Station, Bike, Rental, User as BikeUser, Payment
 from datetime import datetime, timedelta
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse, HttpResponseRedirect
+from django.utils import timezone
 import time
 # Create your views here.
 
@@ -32,6 +35,8 @@ def home(request, *args, **kwargs):
             end_time = (i.start_date+timedelta(hours=1)).strftime('%Y-%m-%d %H:%M')
             print(i.plan)
         print(end_time)
+        print(timezone.now())
+        print(datetime.now())
         context = {'rentals': request.user.rental_set.all().filter(end_station__isnull=True),'time':end_time}
         return render(request, 'bikes/home.html', context=context)
     else:
@@ -261,3 +266,44 @@ def recharge(request):
         request.user.save()
         messages.success(request, f'Amount Rs.{amount} Added To Your Wallet')
     return render(request, 'bikes/recharge.html')
+
+
+def contactView(request):
+    """
+
+    :param request:
+    :return:
+    contact view function for user to contact support from our team
+    """
+    if request.method == 'POST':
+            name = request.POST['name']
+            email = request.POST['email']
+            message = request.POST['message']
+            # print(name,email,message)
+
+            try:
+                send_mail(name, message, email, [email, "shahiljoshi98@gmail.com"])
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+
+    return render(request, "bikes/contact.html")
+
+
+@login_required()
+def user_rentals(request):
+    """
+
+    :param request:
+    :return:
+    user_rentals function show the past rentals of user that logged in
+    """
+    if not request.user.is_authenticated:
+        return redirect('home')
+    rentals = request.user.rental_set.all().filter(end_station__isnull=False).order_by('-end_date')[:5]
+    if request.method == 'POST':
+        print(request.POST)
+        if "show_all_rentals" in request.POST:
+            rentals = request.user.rental_set.all().filter(end_station__isnull=False).order_by('-end_date')
+            return render(request, 'bikes/rentals.html', context={'rentals': rentals})
+
+    return render(request, 'bikes/rentals.html', context={'rentals': rentals})

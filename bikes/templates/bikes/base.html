@@ -44,7 +44,7 @@
         <div class="row">
           <div class="col-md-8 col-xs-12">
             <ul class="left-info">
-              <li><a href="#"><i class="fa fa-envelope"></i>contact@bikeonrent.com</a></li>
+              <li><a href="mailto:contact@bikeonrent.com"><i class="fa fa-envelope"></i>contact@bikeonrent.com</a></li>
               <li><a href="#"><i class="fa fa-phone"></i>123-456-7890</a></li>
             </ul>
           </div>
@@ -139,7 +139,8 @@
           <div class="col-md-4 footer-item last-item">
             <h4>Contact Us</h4>
             <div class="contact-form">
-              <form id="contact footer-contact" action="" method="post">
+              <form id="contact footer-contact" action="{% url 'contact' %}" method="post">
+                  {% csrf_token %}
                 <div class="row">
                   <div class="col-lg-12 col-md-12 col-sm-12">
                     <fieldset>
@@ -158,7 +159,7 @@
                   </div>
                   <div class="col-lg-12">
                     <fieldset>
-                      <button type="submit" id="form-submit" class="filled-button">Send Message</button>
+                      <button type="submit" id="form-submit" class="filled-button" >Send Message</button>
                     </fieldset>
                   </div>
                 </div>

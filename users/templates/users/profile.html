@@ -12,7 +12,15 @@
       </div>
     </div>
     <div class="testimonials">
+
     <div class="container">
+        <nav class="nav nav-pills nav-justified">
+          <a class="nav-item nav-link filled-button" href="{% url 'rentals' %}">Your Past Rentals</a>
+          <a class="nav-item nav-link filled-button" href="{% url 'recharge' %}">Recharge</a>
+
+          <a class="nav-item nav-link filled-button"  href="{% url 'change_password' %}">Change Password</a>
+
+        </nav>
     <div class="content-section">
       <div class="media">
         <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
@@ -27,12 +35,11 @@
               <legend class="border-bottom mb-4">Profile Info</legend>
               {{ u_form|crispy }}
               {{ p_form|crispy }}
-                <a href="{% url 'change_password' %}" class="filled-button">Change Password </a>
-                <a href="{% url 'recharge' %}" class="filled-button">Recharge</a> Your Balance : {{ user.balance }}
+           <strong> Your Balance : {{ user.balance }}</strong>
 
           </fieldset>
           <div class="form-group">
-              <button class="btn btn-outline-info" type="submit">Update</button>
+              <button class="btn btn-primary" type="submit">Update</button>
           </div>
       </form>
     </div>

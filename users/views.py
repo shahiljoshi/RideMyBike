@@ -3,7 +3,7 @@ from django.contrib import messages, auth
 from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import logout
-from .models import Profile
+from .models import Profile,User
 from django.contrib.auth.decorators import login_required
 
 
@@ -15,6 +15,19 @@ def register(request):
     user registration
     """
     if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+
+        username = username.lower()
+        email = email.lower()
+
+        if User.objects.filter(username=username).exists():
+            messages.warning(request, "Username Is Already Taken")
+            return redirect('register')
+        if User.objects.filter(email=email).exists():
+            messages.warning(request, "Email Is Already Taken")
+            return redirect('register')
+
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
