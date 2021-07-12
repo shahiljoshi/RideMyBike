@@ -36,7 +36,7 @@ def home(request, *args, **kwargs):
             print(i.plan)
         print(end_time)
         print(timezone.now())
-        print(datetime.now())
+        print(datetime.now() + timedelta(hours=1))
         context = {'rentals': request.user.rental_set.all().filter(end_station__isnull=True),'time':end_time}
         return render(request, 'bikes/home.html', context=context)
     else:
@@ -136,10 +136,10 @@ def rent_bike(request, station_id, bike_id, user):
             # Rental.objects.filter()
             print("plan you choosed", plan_choosed)
             station = Station.objects.select_for_update().get(pk=station_id)
-            r = Rental(user=user, start_date=datetime.now(), start_station=station, plan=plan_choosed)
+            r = Rental(user=user, start_station=station, plan=plan_choosed)
             r.save()
             end_time = datetime.now() + timedelta(hours=1)
-            print(end_time)
+            print("end time from func",end_time)
             for i in bike_id:
                 bikes = Bike.objects.filter(pk=int(i))
                 Bike.objects.filter(pk=int(i)).update(available=False)
@@ -185,8 +185,13 @@ def return_bike(request, rental_id, station_id):
         global family_rental
         if rental.plan == 'HOURLY':
             print(datetime.now().strftime('%Y-%m-%d %H:%M'))
-            print((rental.start_date + timedelta(seconds=30)).strftime('%Y-%m-%d %H:%M'))
+            # Rental.objects.filter(start_date__hour=)
+            start=Rental.objects.get(id=rental.id).start_date
+            print(start)
+            print((rental.start_date + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M'))
+            # print(rental.start_date)
             if datetime.now().strftime('%Y-%m-%d %H:%M') <= (rental.start_date + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M') :
+            # if rental.end_date <= (rental.start_date + timedelta(hours=1)):
                 charge = 10*rental.bike.count()
             else:
                 messages.warning(request,"Penalty Of Rs.100")
@@ -234,6 +239,18 @@ def rental_detail(request, rental_id):
      rental detail function generates the information of rental and have option to generate the pdf of the bill
     """
     rental = Rental.objects.get(pk=rental_id)
+    if rental.plan == 'HOURLY':
+       cost= rental.bike.count()*10
+       family = (cost*30)/100
+
+    if rental.plan == 'DAILY':
+       cost= rental.bike.count()*50
+       family = (cost*30)/100
+
+    if rental.plan == 'WEEKLY':
+       cost= rental.bike.count()*150
+       family = (cost*30)/100
+
     if request.user != rental.user:
         messages.warning(request, 'You cannot see this rental, sorry.')
         return render(request,
@@ -241,7 +258,7 @@ def rental_detail(request, rental_id):
                       {'rentals': request.user.rental_set.all().filter(end_station__isnull=True)})
     return render(request,
                   'bikes/rental_detail.html',
-                  {'rental': rental})
+                  {'rental': rental,'family':family,'discount_rate':cost})
 
 
 @login_required()

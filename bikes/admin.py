@@ -7,7 +7,7 @@ class StationAdmin(admin.ModelAdmin):
     list_display = ('id', 'address', 'working')
     list_display_links = ('id', 'address')
     list_editable = ('working',)
-    search_fields = ('id', 'address')
+    # search_fields = ('id', 'address')
     list_per_page = 25
 
 
@@ -18,7 +18,7 @@ class BikeAdmin(admin.ModelAdmin):
     list_display = ('id', 'station', 'working', 'available')
     list_display_links = ('id', 'station')
     list_editable = ('working', 'available')
-    search_fields = ('id',  'station',)
+    # search_fields = ('id',  'station',)
     list_per_page = 25
 
 
@@ -28,7 +28,7 @@ admin.site.register(Bike, BikeAdmin)
 class RentalAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'start_date', 'end_date', 'start_station', 'end_station', 'cost', 'plan')
     list_display_links = ('id',)
-    search_fields = ('id', 'user')
+    # search_fields = ('id', 'user')
     list_per_page = 25
 
 
@@ -38,7 +38,7 @@ admin.site.register(Rental, RentalAdmin)
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('id', 'rental', 'status',)
     list_display_links = ('id', 'rental')
-    search_fields = ('id', 'rental', 'status')
+    # search_fields = ('id', 'rental', 'status')
     list_per_page = 25
 
 
