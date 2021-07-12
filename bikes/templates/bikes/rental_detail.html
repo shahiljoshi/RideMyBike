@@ -89,7 +89,7 @@
     <td class="right">{{ discount_rate }}</td>
     </tr>
 
-    {% if rental.bike.count == 3 %}
+    {% if rental.bike.count >= 3 %}
         <tr>
         <td class="left">
         <strong>Discount</strong>
