@@ -299,6 +299,7 @@ def contactView(request):
             # print(name,email,message)
 
             try:
+
                 send_mail(name, message, email, [email, "shahiljoshi98@gmail.com"])
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')

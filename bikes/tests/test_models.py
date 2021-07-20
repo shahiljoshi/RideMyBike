@@ -1,4 +1,4 @@
-from django.test import TestCase
+# from django.test import TestCase
 # from .models import Bike, Station, Rental
 # # Create your tests here.
 #
@@ -14,10 +14,10 @@ from django.test import TestCase
 #
 # class StationTestCase(TestCase):
 #     def setUp(self):
-#         Station.objects.create(address="na")
+#         Station.objects.create(address="naranpura")
 #
 #     def test_station(self):
-#         station1 = Station.objects.get(address="na")
+#         station1 = Station.objects.get(address="naranpura")
 #
 #
 #
