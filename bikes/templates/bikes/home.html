@@ -198,8 +198,19 @@
                 >
             </p>
         </video>
+        <video id="video_player" controls="controls" poster="" controls autoplay>
+            <source id="video_mp4" src="{%  static 'bikes/SampleVideo_720x480_5mb.mp4' %}" type='video/mp4' />
+        </video>
+        <script type="text/javascript">
+            var video = document.getElementById("video_player");
+            video.oncanplaythrough = function() {
+                video.muted = true;
+                video.play();
+            }
+        </script>
 
     </div>
 </div>
 
 {% endblock %}
+<!--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-->
